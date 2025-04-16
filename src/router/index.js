@@ -32,6 +32,9 @@ export default defineRouter(function (/* { store, ssrContext } */) {
   Router.beforeEach((to, from, next) => {
     const authStore = useAuthStore(); // Initialize the auth store
 
+    // Initialize auth store from storage if not already done
+    authStore.initializeFromStorage()
+
     // Check if the route requires authentication
     if (to.meta.requiresAuth && !authStore.isAuthenticated) {
       // Redirect to login if not authenticated

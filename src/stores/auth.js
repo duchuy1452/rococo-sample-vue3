@@ -2,9 +2,7 @@ import { defineStore, acceptHMRUpdate } from 'pinia'
 import { Notify } from 'quasar';
 import axios from "config/axios"
 import localStorageService from 'services/localStorage.service';
-
 import { handleAuthRequest } from '@/utils/apiHelper';
-
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -26,10 +24,39 @@ export const useAuthStore = defineStore('auth', {
   },
 
   actions: {
+    initializeFromStorage() {
+      if (this.initialized) return
+
+      const user = localStorageService.getItem('user')
+      const accessToken = localStorageService.getItem('accessToken')
+      const accessTokenExpiry = localStorageService.getItem('accessTokenExpiry')
+
+      if (user && accessToken && accessTokenExpiry) {
+        const currentTime = Math.floor(Date.now() / 1000)
+        if (currentTime < accessTokenExpiry) {
+          this.user = user
+          this.accessToken = accessToken
+          this.accessTokenExpiry = accessTokenExpiry
+        } else {
+          // Clear expired tokens
+          this.clearAuth()
+        }
+      }
+
+      this.initialized = true
+    },
+
+    clearAuth() {
+      localStorageService.clear()
+      this.user = null
+      this.accessToken = null
+      this.accessTokenExpiry = null
+    },
+
     async signup(payload) {
       let response
       try {
-        response = await axios.post('/auth/signup', payload);        
+        response = await axios.post('/auth/signup', payload);
       } catch {
         Notify.create({
           message: "An unknown error occurred",
@@ -61,10 +88,7 @@ export const useAuthStore = defineStore('auth', {
     },
 
     async logout() {
-      localStorageService.clear()
-      this.user = null;
-      this.accessToken = null;
-      this.accessTokenExpiry = null;
+      this.clearAuth()
       this.router.push('/login')
     },
 

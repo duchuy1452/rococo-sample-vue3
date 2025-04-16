@@ -67,7 +67,15 @@ export const useAuthStore = defineStore('auth', {
       this.accessTokenExpiry = null;
       this.router.push('/login')
     },
-  }
+
+    async forgotPassword(payload) {
+      return handleAuthRequest(
+        this,
+        () => axios.post('/auth/forgot_password', payload),
+        this.router,
+      )
+    },
+  },
 })
 
 if (import.meta.hot) {

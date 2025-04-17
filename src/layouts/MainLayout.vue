@@ -57,6 +57,11 @@ const linksList = [
     link: '/dashboard',
   },
   {
+    title: 'Todo App',
+    icon: 'task',
+    link: '/todos',
+  },
+  {
     title: 'Profile',
     icon: 'person',
     link: '/profile',

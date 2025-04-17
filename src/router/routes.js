@@ -10,6 +10,7 @@ const routes = [
       { path: '/set-password/:token/:uidb64', component: () => import('pages/SetPasswordPage.vue'), meta: { requiresAuth: false } },
       { path: 'dashboard', component: () => import('pages/IndexPage.vue'), meta: { requiresAuth: true } },
       { path: 'profile', component: () => import('pages/ProfilePage.vue'), meta: { requiresAuth: true } },
+      { path: 'todos', component: () => import('pages/TodoPage.vue'), meta: { requiresAuth: true } },
     ]
   },
 

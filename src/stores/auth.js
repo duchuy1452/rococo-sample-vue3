@@ -3,6 +3,7 @@ import { Notify } from 'quasar';
 import axios from "config/axios"
 import localStorageService from 'services/localStorage.service';
 import { handleAuthRequest } from '@/utils/apiHelper';
+import apiClient from 'config/axios';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -56,7 +57,7 @@ export const useAuthStore = defineStore('auth', {
     async signup(payload) {
       let response
       try {
-        response = await axios.post('/auth/signup', payload);
+        response = await apiClient.post('/auth/signup', payload);
       } catch {
         Notify.create({
           message: "An unknown error occurred",

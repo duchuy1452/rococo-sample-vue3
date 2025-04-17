@@ -12,16 +12,6 @@
         />
       </q-btn-group>
     </div>
-    <div class="col-12 col-sm-4 text-right">
-      <q-btn
-        v-if="completedCount > 0"
-        label="Clear Completed"
-        color="negative"
-        flat
-        dense
-        @click="$emit('clear-completed')"
-      />
-    </div>
   </div>
 </template>
 

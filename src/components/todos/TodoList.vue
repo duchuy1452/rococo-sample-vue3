@@ -41,16 +41,21 @@
 
     <!-- Add Task Dialog -->
     <q-dialog v-model="showAddDialog">
-      <q-card style="min-width: 350px">
+      <q-card style="width: 600px; max-width: 95vw">
         <q-card-section class="row items-center q-pb-none">
           <div class="text-h6">Add New Task</div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
 
-        <q-card-section>
+        <q-card-section class="q-pt-md">
           <TodoForm
-            :initial-data="{ title: '', priority: 'medium', dueDate: null }"
+            :initial-data="{
+              title: '',
+              description: '',
+              priority: 1,
+              dueDate: null,
+            }"
             submit-label="Add Task"
             @submit="handleAddSubmit"
             @cancel="showAddDialog = false"
@@ -61,14 +66,14 @@
 
     <!-- Edit Task Dialog -->
     <q-dialog v-model="showEditDialog">
-      <q-card style="min-width: 350px">
+      <q-card style="width: 600px; max-width: 95vw">
         <q-card-section class="row items-center q-pb-none">
           <div class="text-h6">Edit Task</div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
 
-        <q-card-section>
+        <q-card-section class="q-pt-md">
           <TodoForm
             v-if="showEditDialog"
             :initial-data="editingTask"
@@ -95,7 +100,8 @@ const showEditDialog = ref(false)
 const editingId = ref(null)
 const editingTask = ref({
   title: '',
-  priority: 'medium',
+  description: '',
+  priority: 1,
   dueDate: null,
 })
 
@@ -127,6 +133,7 @@ const startEditing = (todo) => {
   editingId.value = todo.id
   editingTask.value = {
     title: todo.title,
+    description: todo.description,
     priority: todo.priority,
     dueDate: todo.dueDate,
   }

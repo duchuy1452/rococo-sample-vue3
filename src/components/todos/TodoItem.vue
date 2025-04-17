@@ -1,40 +1,38 @@
 <template>
-  <q-item class="q-py-md" :class="{ 'todo-completed': todo.completed }">
+  <q-item v-ripple clickable class="todo-item q-py-md">
     <q-item-section avatar>
       <q-checkbox :model-value="todo.completed" @update:model-value="$emit('toggle')" />
     </q-item-section>
 
     <q-item-section>
-      <q-item-label :class="{ 'text-strike': todo.completed }">
+      <q-item-label :class="{ 'text-strike': todo.completed }" class="text-subtitle1 q-mb-xs">
         {{ todo.title }}
       </q-item-label>
-      <q-item-label caption>
-        <q-chip :color="getPriorityColor(todo.priority)" text-color="white" size="sm">
-          {{ todo.priority }}
-        </q-chip>
-        <template v-if="todo.dueDate">
-          <q-chip
-            :color="isOverdue(todo.dueDate) ? 'negative' : 'grey'"
-            text-color="white"
-            size="sm"
-          >
-            Due {{ formatDate(todo.dueDate) }}
-          </q-chip>
-        </template>
+      <q-item-label caption class="text-grey-8 q-mb-sm">
+        {{ todo.description || '(No description)' }}
+      </q-item-label>
+      <q-item-label caption class="row items-center text-grey-7">
+        <q-icon name="event" size="16px" class="q-mr-xs" />
+        {{ formatDate(todo.dueDate) }}
+        <q-separator vertical spaced />
+        <q-icon name="flag" size="16px" class="q-mr-xs" />
+        {{ getPriorityLabel(todo.priority) }}
       </q-item-label>
     </q-item-section>
 
     <q-item-section side>
       <div class="row items-center">
-        <q-btn flat round color="primary" icon="edit" size="sm" @click="$emit('edit')" />
-        <q-btn flat round color="negative" icon="delete" size="sm" @click="$emit('delete')" />
+        <q-btn flat round color="primary" icon="edit" size="sm" @click.stop="$emit('edit')" />
+        <q-btn flat round color="negative" icon="delete" size="sm" @click.stop="$emit('delete')" />
       </div>
     </q-item-section>
   </q-item>
 </template>
 
 <script setup>
-import { date } from 'quasar'
+import { defineProps, defineEmits } from 'vue'
+import dayjs from 'dayjs'
+import { PRIORITY_LABELS } from '@/constants/priority'
 
 defineProps({
   todo: {
@@ -45,32 +43,28 @@ defineProps({
 
 defineEmits(['toggle', 'edit', 'delete'])
 
-const getPriorityColor = (priority) => {
-  const colors = {
-    low: 'green',
-    medium: 'orange',
-    high: 'red',
-  }
-  return colors[priority] || 'grey'
+const formatDate = (date) => {
+  if (!date) return 'No due date'
+  return dayjs(date).format('YYYY/MM/DD')
 }
 
-const formatDate = (dateStr) => {
-  return date.formatDate(dateStr, 'MMM D')
-}
-
-const isOverdue = (dateStr) => {
-  return date.getDateDiff(new Date(), dateStr, 'days') > 0
+const getPriorityLabel = (priority) => {
+  return PRIORITY_LABELS[priority] || 'Unknown'
 }
 </script>
 
-<style scoped>
-.todo-completed {
-  opacity: 0.7;
-  background: #f9f9f9;
-}
+<style lang="scss" scoped>
+.todo-item {
+  border-radius: 8px;
+  transition: all 0.3s ease;
 
-.text-strike {
-  text-decoration: line-through;
-  color: #9e9e9e;
+  &:hover {
+    background: rgba(0, 0, 0, 0.03);
+  }
+
+  .text-strike {
+    text-decoration: line-through;
+    color: #9e9e9e;
+  }
 }
 </style>
